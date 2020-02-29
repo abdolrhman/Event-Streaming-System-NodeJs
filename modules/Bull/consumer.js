@@ -112,6 +112,12 @@ module.exports = async function(job, done) {
         );
 
         // reset count clicks to 0
+        await AdClickSchema.userCountModel.update(
+          {
+            UserId: eventMeta["UserId"]
+          },
+          { $set: { AvgClick: 1 } }
+        );
       }
       await AdClickSchema.AdClick.create({
         AdId: eventMeta["AdId"],
