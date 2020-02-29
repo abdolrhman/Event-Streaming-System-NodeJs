@@ -7,19 +7,21 @@ class AnalysisTopic {
    * @param meta
    */
   constructor(type, url, meta) {
-    this._Type = type;
-    this._Url = url;
-    this._Meta = meta;
+    this.type = type;
+    this.url = url;
+    this.meta = meta;
   }
   get Url() {
-    return this._Url;
+    return this.url;
   }
 
   get Type() {
-    return this._Type;
+    return this.type;
   }
 
   get Meta() {
-    return this._Meta;
+    return this.meta;
   }
 }
+
+module.exports = AnalysisTopic;

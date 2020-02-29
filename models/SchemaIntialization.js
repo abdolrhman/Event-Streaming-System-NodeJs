@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-require('dotenv').config();
+require("dotenv").config();
+mongoose.set("useCreateIndex", true);
 
 mongoose
   .connect(process.env.DATABASE_URL, { useNewUrlParser: true })

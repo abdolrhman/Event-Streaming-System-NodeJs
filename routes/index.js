@@ -1,18 +1,45 @@
 const express = require("express");
 const router = express.Router();
-const kafka  = require('./test');
-
-/* GET home page. */
-router.get("/", function(req, res, next) {
-  // get req body
-  
-  // check event name
-  // use produce based on
-
-
-
-  kafka.run();
-  res.send("respond with a resource");
+// const kafka = require("./consumer");
+const queue = require("../modules/Bull/queue");
+// const consumer = require("./consumer");
+const AnalysisTopic = require("../models/AnalysisTopic");
+/**
+ * End point that manages the three events
+ */
+router.post("/", async function(req, res, next) {
+  // access req body
+  const eventProperties = req.body;
+  console.log("rrr", req.body);
+  const eventType = eventProperties["Type"];
+  // use the right producer with the right event based on body type
+  const AnalysisDataEvent = new AnalysisTopic(
+    eventProperties["Type"],
+    eventProperties["Url"],
+    eventProperties["Meta"]
+  );
+  console.log("Arrayaa", AnalysisDataEvent);
+  const queueHandler = await queue(eventType, AnalysisDataEvent);
+  console.log("eee", queueHandler);
+  res.send("end");
+  // switch (eventType) {
+  //   case "PageView":
+  //     console.log("page view");
+  //     producer.producer(eventType, AnalysisDataEvent).then(r => {
+  //       res.send("Add successfully to PageView");
+  //     });
+  //     break;
+  //   case "AdImpression":
+  //     console.log("Ad impression");
+  //
+  //     break;
+  //   case "AdClick":
+  //     console.log("Ad Click");
+  //     break;
+  // }
 });
+// consumer.run().then(r => {
+//   console.log("consumer is on");
+// });
 
 module.exports = router;
