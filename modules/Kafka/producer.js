@@ -6,7 +6,6 @@ const kafka = new Kafka({
 });
 
 const produceDataToQueue = async function producer(type, data) {
-  console.log("wwww", type, data);
   const producer = kafka.producer();
   await producer.connect();
   await producer.send({

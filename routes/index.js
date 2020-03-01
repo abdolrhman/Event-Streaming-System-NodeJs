@@ -20,25 +20,7 @@ router.post("/", async function(req, res, next) {
 
   const queueHandler = await queue(eventType, AnalysisDataEvent);
 
-  res.send("end");
-  // switch (eventType) {
-  //   case "PageView":
-  //     console.log("page view");
-  //     producer.producer(eventType, AnalysisDataEvent).then(r => {
-  //       res.send("Add successfully to PageView");
-  //     });
-  //     break;
-  //   case "AdImpression":
-  //     console.log("Ad impression");
-  //
-  //     break;
-  //   case "AdClick":
-  //     console.log("Ad Click");
-  //     break;
-  // }
+  res.send("endedSuccessfully").status(200);
 });
-// consumer.run().then(r => {
-//   console.log("consumer is on");
-// });
 
 module.exports = router;

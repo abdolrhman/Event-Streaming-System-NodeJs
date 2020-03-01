@@ -1,27 +1,26 @@
 const { Kafka } = require("kafkajs");
+const ip = require("ip");
+const AnalysisModel = require("../../models/PageViewSchema");
+
+const host = process.env.HOST_IP || ip.address();
 
 const kafka = new Kafka({
-  clientId: "my-app",
-  brokers: [`localhost:9092`]
+  clientId: "speakol",
+  brokers: [`${host}:9092`]
 });
 
 const producer = kafka.producer();
 const consumer = kafka.consumer({ groupId: "test-group" });
 
 const run = async () => {
-  // Producing
-  await producer.connect();
-  await producer.send({
-    topic: "test-topic",
-    messages: [{ value: "Hello KafkaJS user!" }]
-  });
-
   // Consuming
   await consumer.connect();
-  await consumer.subscribe({ topic: "test-topic", fromBeginning: true });
+
+  await consumer.subscribe({ topic: "analytics-data" });
 
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
+      // this will be what inside the consumer in kafka
       console.log({
         partition,
         offset: message.offset,
@@ -30,5 +29,7 @@ const run = async () => {
     }
   });
 };
+
+module.exports.run = run;
 
 run().catch(console.error);
