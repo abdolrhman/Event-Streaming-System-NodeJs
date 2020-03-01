@@ -1,6 +1,6 @@
 const mongoose = require("./SchemaIntialization");
 
-const AnalysisSchema = new mongoose.Schema({
+const pageViewSchema = new mongoose.Schema({
   website: {
     type: String,
     unique: true,
@@ -16,5 +16,5 @@ const AnalysisSchema = new mongoose.Schema({
   }
 });
 
-const AnalysisModel = mongoose.model("Analysis", AnalysisSchema);
-module.exports = AnalysisModel;
+const pageViewModel = mongoose.model("PageView", pageViewSchema);
+module.exports = pageViewModel;

@@ -1,6 +1,6 @@
 const { Kafka } = require("kafkajs");
 const ip = require("ip");
-const AnalysisModel = require("../models/AnalysisSchema");
+const AnalysisModel = require("../models/PageViewSchema");
 
 const host = process.env.HOST_IP || ip.address();
 

@@ -1,7 +1,8 @@
-const AnalysisModel = require("../models/AnalysisSchema");
+const AnalysisModel = require("../models/PageViewSchema");
 const AdsImpressionSchema = require("../models/AdsImpressionSchema");
 const AdClickSchema = require("../models/AdClickSchema");
 const config = require("../config/default");
+const generalHelper = require("../helper/generalHelper");
 
 module.exports.isLastDay = function isLastDay(dt) {
   console.log(new Date(dt.getTime() + 86400000).getDate() === 1);
@@ -11,10 +12,9 @@ module.exports.isLastDay = function isLastDay(dt) {
 module.exports.spikeNotification = async (eventType, eventData) => {
   switch (eventType) {
     case "PageView":
-      let pageName = /[^/]*$/.exec(eventData["url"]);
-
+      let pageName = generalHelper.grapeNameFromUrl(eventData["url"]);
       const PageView = await AnalysisModel.findOne({
-        website: pageName
+        pageName: pageName
       });
       if (PageView["pageCounts"] >= config.spikeConfig.pageView) {
         console.log(

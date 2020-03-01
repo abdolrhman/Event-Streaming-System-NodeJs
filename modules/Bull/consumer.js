@@ -1,6 +1,8 @@
-const AnalysisModel = require("../../models/AnalysisSchema");
+const AnalysisModel = require("../../models/PageViewSchema");
 const AdsImpressionSchema = require("../../models/AdsImpressionSchema");
 const AdClickSchema = require("../../models/AdClickSchema");
+const generalHelpers = require("../../helper/generalHelper");
+const { updateRecordOrCreate } = require("../../helper/queryHelper");
 
 module.exports = async function(job, done) {
   const analysisDataProperties = job["data"]["type"];
@@ -23,16 +25,11 @@ module.exports = async function(job, done) {
     return AdsImpression;
   }
 
-  async function updateRecordOrCreate(modelName, query, update) {
-    let options = { upsert: true, new: true, setDefaultsOnInsert: true };
-    await modelName.findOneAndUpdate(query, update, options);
-  }
-
   switch (eventType) {
     case "PageView":
       console.log("page view");
       // grape the page name after website / ...
-      let pageName = /[^/]*$/.exec(eventUrl);
+      let pageName = generalHelpers.grapeNameFromUrl(eventUrl);
       if (pageName === eventUrl) {
         pageName = "root";
       }
@@ -41,14 +38,17 @@ module.exports = async function(job, done) {
         pageName: pageName
       };
       let update = { $inc: { pageCounts: 1 } };
+      // website page and increase page count by one in update
       await updateRecordOrCreate(AnalysisModel, pageViewQuery, update);
 
       break;
     case "AdImpression":
       console.log("Ad impression");
-      const date = new Date();
-      const dateMonth = date.getMonth() + 1;
-      AdsImpression(eventMeta["AdId"], eventMeta["UserId"], dateMonth);
+      AdsImpression(
+        eventMeta["AdId"],
+        eventMeta["UserId"],
+        generalHelpers.dateMonth()
+      );
       break;
     case "AdClick":
       console.log("Ad Click");

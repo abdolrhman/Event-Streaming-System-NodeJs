@@ -1,6 +1,6 @@
 const Queue = require("bull");
 const producer = require("./producer");
-const helpers = require("../../Helper/onCompleteHelpers");
+const helpers = require("../../helper/onCompleteHelpers");
 const AdsImpressionMonthlyModel = require("../../models/AdsImpressionMonthlySchema");
 const AdsImpressionModel = require("../../models/AdsImpressionSchema");
 const AdsProcessingQueue = new Queue("AdsProcessing", "redis://127.0.0.1:6379");
