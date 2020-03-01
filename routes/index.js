@@ -10,7 +10,6 @@ const AnalysisTopic = require("../models/AnalysisTopic");
 router.post("/", async function(req, res, next) {
   // access req body
   const eventProperties = req.body;
-  console.log("rrr", req.body);
   const eventType = eventProperties["Type"];
   // use the right producer with the right event based on body type
   const AnalysisDataEvent = new AnalysisTopic(
@@ -18,9 +17,9 @@ router.post("/", async function(req, res, next) {
     eventProperties["Url"],
     eventProperties["Meta"]
   );
-  console.log("Arrayaa", AnalysisDataEvent);
+
   const queueHandler = await queue(eventType, AnalysisDataEvent);
-  console.log("eee", queueHandler);
+
   res.send("end");
   // switch (eventType) {
   //   case "PageView":

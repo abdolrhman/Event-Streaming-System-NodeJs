@@ -9,7 +9,12 @@ AdsProcessingQueue.process(require("./consumer"));
 
 // Define a local completed event
 AdsProcessingQueue.on("completed", async (job, result) => {
-  const eventType = job["data"]["type"]["type"];
+  /**
+   * Create a record each last day in month with  the number of AdImpression
+   * For that month
+   */
+  const eventDataType = job["data"]["type"];
+  const eventType = eventDataType["type"];
   const today = new Date();
   if (eventType === "AdImpression" && helpers.isLastDay(today)) {
     const date = new Date();
@@ -17,15 +22,14 @@ AdsProcessingQueue.on("completed", async (job, result) => {
     const monthlyAdImpressionCount = await AdsImpressionModel.find({
       Month: dateMonth
     }).count();
-    console.log("count", monthlyAdImpressionCount);
     AdsImpressionMonthlyModel.create({
       AdsImpressionCount: monthlyAdImpressionCount,
       Month: dateMonth
     });
   }
-  console.log("eeee", eventType);
 
-  console.log(`Job completed with result ${result}`);
+  // spike thing !!
+  await helpers.spikeNotification(eventType, eventDataType);
 });
 
 module.exports = async function(type, data) {
