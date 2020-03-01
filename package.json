@@ -17,6 +17,8 @@
     "kafkajs": "^1.12.0",
     "mongoose": "^5.9.2",
     "morgan": "~1.9.1",
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "ioredis": "latest",
+    "uuid": "latest"
   }
 }

@@ -1,24 +1,42 @@
-const bodyObj = {
-  Type: "AdClick",
-  Url: "google.com",
-  Meta: {
-    AdId: "33",
-    UserId: "1231"
-  }
-};
-function filterByTerm(inputArr, searchTerm) {
-  return inputArr.filter(function(arrayElement) {
-    return arrayElement.url.match(searchTerm);
+const Queue = require("bull");
+const redis = require("ioredis");
+const uuid = require("uuid");
+
+describe("general queue test", function() {
+  let queue;
+  let client;
+
+  beforeEach(() => {
+    client = new redis();
+    return client.flushdb();
   });
-}
-describe("filter", function() {
-  test("it should filter by a search term (link)", () => {
-    // actual test
-    const input = [
-      { id: 1, url: "https://www.url1.dev" },
-      { id: 2, url: "https://www.url2.dev" },
-      { id: 3, url: "https://www.link3.dev" }
-    ];
+  afterEach(function() {
+    this.timeout(
+      queue.settings.stalledInterval * (1 + queue.settings.maxStalledCount)
+    );
+    return queue.close().then(() => {
+      return client.quit();
+    });
+  });
+
+  beforeEach(() => {
+    queue = new Queue("test-" + uuid(), {
+      redis: { port: 6379, host: "127.0.0.1" }
+    });
+  });
+  describe("create", () => {
+    let job;
+    let data;
+    let opts;
+
+    beforeEach(() => {
+      data = { foo: "bar" };
+      opts = { testOpt: "enabled" };
+
+      return Job.create(queue, data, opts).then(createdJob => {
+        job = createdJob;
+      });
+    });
 
     const output = [{ id: 3, url: "https://www.link3.dev" }];
     expect(filterByTerm(input, "link")).toEqual(output);
