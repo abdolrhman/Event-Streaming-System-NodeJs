@@ -6,11 +6,10 @@
  * @param update
  * @returns {Promise<void>}
  */
-async function updateRecordOrCreate(modelName, query, update) {
+module.exports.updateRecordOrCreate = async function(modelName, query, update) {
   let options = { upsert: true, new: true, setDefaultsOnInsert: true };
   await modelName.findOneAndUpdate(query, update, options);
-}
-module.exports.updateRecordOrCreate = updateRecordOrCreate;
+};
 
 module.exports.AdsImpressionCreate = function(schema, AdId, UserId, Month) {
   const AdsImpression = schema;
