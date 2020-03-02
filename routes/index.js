@@ -17,9 +17,11 @@ router.post("/", async function(req, res, next) {
     eventProperties["Url"],
     eventProperties["Meta"]
   );
-
-  const queueHandler = await queue(eventType, AnalysisDataEvent);
-
+  try {
+    await queue(eventType, AnalysisDataEvent);
+  } catch (e) {
+    res.sendStatus(500);
+  }
   res.send("endedSuccessfully").status(200);
 });
 

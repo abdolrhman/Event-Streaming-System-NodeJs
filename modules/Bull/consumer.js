@@ -2,28 +2,13 @@ const AnalysisModel = require("../../models/PageViewSchema");
 const AdsImpressionSchema = require("../../models/AdsImpressionSchema");
 const AdClickSchema = require("../../models/AdClickSchema");
 const generalHelpers = require("../../helper/generalHelper");
-const { updateRecordOrCreate } = require("../../helper/queryHelper");
+const { updateRecordOrCreate, AdsImpressionCreate } = require("../../helper/queryHelper");
 
 module.exports = async function(job, done) {
   const analysisDataProperties = job["data"]["type"];
   const eventType = analysisDataProperties["type"];
   const eventUrl = analysisDataProperties["url"];
   const eventMeta = analysisDataProperties["meta"];
-
-  function AdsImpression(AdId, UserId, Month) {
-    const AdsImpression = new AdsImpressionSchema();
-    AdsImpression.AdId = AdId;
-    AdsImpression.UserId = UserId;
-    AdsImpression.Month = Month;
-    AdsImpression.save(function(err) {
-      if (!err) {
-        console.log("AdsImpression e saved");
-      } else {
-        console.log("error while saving AdsImpression data, err : " + err);
-      }
-    });
-    return AdsImpression;
-  }
 
   switch (eventType) {
     case "PageView":
@@ -44,7 +29,9 @@ module.exports = async function(job, done) {
       break;
     case "AdImpression":
       console.log("Ad impression");
-      AdsImpression(
+      const AdsImpression = new AdsImpressionSchema();
+      AdsImpressionCreate(
+        AdsImpression,
         eventMeta["AdId"],
         eventMeta["UserId"],
         generalHelpers.dateMonth()
